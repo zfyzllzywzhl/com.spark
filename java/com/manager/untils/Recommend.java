@@ -272,7 +272,7 @@ public class Recommend  implements Serializable{
 	 *            
 	 * @param products	物品列表
 	 *           
-	 * @param numResult	推荐的个数
+	 * @param numResult	推荐个数
 	 *            
 	 * @return recommendationsResult	推荐结果.
 	 */
