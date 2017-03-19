@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.spark.SparkConf;
+import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaDoubleRDD;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -185,7 +186,8 @@ public class Recommend  implements Serializable{
 		 * @return bestModel	最佳模型
 		 */
 	//保存模型未写
-	public MatrixFactorizationModel trainModel(JavaRDD<Rating> training,JavaRDD<Rating> validation,int[] ranks,float[] lambdas,int[] numIters){
+	public MatrixFactorizationModel trainModel(JavaRDD<Rating> training,JavaRDD<Rating> validation,int[] ranks,
+			float[] lambdas,int[] numIters,String modelSavePath){
 		double bestValidationRmse = Double.MAX_VALUE;
 		int bestRank = 0;
 		float bestLambda = -1.0f;
@@ -212,7 +214,9 @@ public class Recommend  implements Serializable{
 				}
 			}
 		}
-		
+		//保存模型
+		//SparkContext sc=new SparkContext(conf);
+		//bestModel.save(sc, modelSavePath);
 		return bestModel;
 		
 	}

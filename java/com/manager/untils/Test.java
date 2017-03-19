@@ -15,13 +15,14 @@ public class Test {
 		int[] numIters = { 10, 20 };
 		int userId=4;
 		int numResult=4;
+		String modelSavePath="D://谷歌下载//ml-1m//";
 		Recommend recommend=new Recommend();
 		//1.导入切割数据
 		recommend.splitData(ratingsPath, moviesPath);
 		//2.训练数据
 		recommend.trainData();
 		//3.训练模型
-		MatrixFactorizationModel bestModel=recommend.trainModel(recommend.getTraining(), recommend.getValidation(), ranks, lambdas, numIters);
+		MatrixFactorizationModel bestModel=recommend.trainModel(recommend.getTraining(), recommend.getValidation(), ranks, lambdas, numIters,modelSavePath);
 		//4.计算RMSE
 		recommend.computeRMSE(bestModel, recommend.getTest());
 		//5.推荐结果
