@@ -34,8 +34,8 @@ import org.apache.spark.storage.StorageLevel;
 
 import com.github.fommil.netlib.BLAS;
 import com.google.common.collect.Sets;
-import com.manager.bean.MIdRated;
-import com.manager.bean.Movie;
+
+
 
 
 
@@ -57,20 +57,6 @@ public class Recommend  implements Serializable{
 		JavaRDD<Rating> test=null;
 		JavaRDD<Tuple2<Integer, Rating>> ratings=null;
 		Map<Integer, String> products=null;
-		
-		
-		
-		
-		
-		private static Map<Integer, Movie> movies = new HashMap<Integer, Movie>();
-		private static Map<Integer, Set<MIdRated>> userWithRatedMovies = new HashMap<Integer, Set<MIdRated>>();
-		private static Set<Integer> allMovieIds = new HashSet<Integer>();
-		private static Map<Integer, double[]> userFeatures = new HashMap<Integer, double[]>();
-		private static Map<Integer, double[]> productFeatures = new HashMap<Integer, double[]>();
-		private static  String userFeaturePath =null;
-		private static  String productFeaturePath = null;
-		private static Configuration configuration = null;
-		
 		
 		
 		public JavaRDD<Rating> getTraining() {

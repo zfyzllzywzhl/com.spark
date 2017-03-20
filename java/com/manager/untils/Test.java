@@ -1,6 +1,11 @@
  package com.manager.untils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 import org.apache.spark.mllib.recommendation.MatrixFactorizationModel;
+import org.apache.spark.mllib.recommendation.Rating;
 
 import com.manager.bean.User;
 
@@ -29,10 +34,10 @@ public class Test {
 		//5.推荐结果
 		MatrixFactorizationModel sameModel = MatrixFactorizationModel.load(recommend.sc.sc(),
 				modelSavePath);
-		System.out.println("模型"+sameModel);
-		
-		
-		System.out.println("结果为："+recommend.recommendationsResult(userId, sameModel, recommend.getRatings(), recommend.getProducts(), numResult));
+		List<Rating> result=new ArrayList<Rating>();
+		result=recommend.recommendationsResult(userId, sameModel, recommend.getRatings(),
+														recommend.getProducts(), numResult);
+		System.out.println("结果为："+result);
 	}
 
 }
