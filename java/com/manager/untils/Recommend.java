@@ -1,15 +1,26 @@
 package com.manager.untils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
+
 import org.apache.spark.api.java.JavaDoubleRDD;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -21,7 +32,13 @@ import org.apache.spark.mllib.recommendation.MatrixFactorizationModel;
 import org.apache.spark.mllib.recommendation.Rating;
 import org.apache.spark.storage.StorageLevel;
 
-import com.manager.bean.User;
+import com.github.fommil.netlib.BLAS;
+import com.google.common.collect.Sets;
+import com.manager.bean.MIdRated;
+import com.manager.bean.Movie;
+
+
+
 
 import scala.Tuple2;
 /**
@@ -34,11 +51,27 @@ public class Recommend  implements Serializable{
 	// 初始化 Spark
 		static SparkConf conf = new SparkConf().setAppName("MovieRecommendation").setMaster("local");
 		static JavaSparkContext sc = new JavaSparkContext(conf);
+		
 		JavaRDD<Rating> training =null;
 		JavaRDD<Rating> validation=null;
 		JavaRDD<Rating> test=null;
 		JavaRDD<Tuple2<Integer, Rating>> ratings=null;
 		Map<Integer, String> products=null;
+		
+		
+		
+		
+		
+		private static Map<Integer, Movie> movies = new HashMap<Integer, Movie>();
+		private static Map<Integer, Set<MIdRated>> userWithRatedMovies = new HashMap<Integer, Set<MIdRated>>();
+		private static Set<Integer> allMovieIds = new HashSet<Integer>();
+		private static Map<Integer, double[]> userFeatures = new HashMap<Integer, double[]>();
+		private static Map<Integer, double[]> productFeatures = new HashMap<Integer, double[]>();
+		private static  String userFeaturePath =null;
+		private static  String productFeaturePath = null;
+		private static Configuration configuration = null;
+		
+		
 		
 		public JavaRDD<Rating> getTraining() {
 			return training;
@@ -188,7 +221,16 @@ public class Recommend  implements Serializable{
 	//保存模型未写
 	public MatrixFactorizationModel trainModel(JavaRDD<Rating> training,JavaRDD<Rating> validation,int[] ranks,
 			float[] lambdas,int[] numIters,String modelSavePath){
-		double bestValidationRmse = Double.MAX_VALUE;
+		MatrixFactorizationModel sameModel = MatrixFactorizationModel.load(sc.sc(),
+				  modelSavePath);
+		if(sameModel!=null){
+			System.out.println("进入已经训练的模型");
+			return sameModel;
+		}
+		else{
+			System.out.println("进入没有训练的模型");
+			double bestValidationRmse = Double.MAX_VALUE;
+		
 		int bestRank = 0;
 		float bestLambda = -1.0f;
 		int bestNumIter = -1;
@@ -216,8 +258,14 @@ public class Recommend  implements Serializable{
 		}
 		//保存模型
 		//SparkContext sc=new SparkContext(conf);
-		//bestModel.save(sc, modelSavePath);
+		System.out.println("sc---------------------");
+		bestModel.save(sc.sc(), modelSavePath);
+		System.out.println("scend---------------------************"+bestModel.logName());
+		  
+		
+		
 		return bestModel;
+		}
 		
 	}
 	
@@ -340,4 +388,5 @@ public class Recommend  implements Serializable{
 		return recommendations;
 	}
 	// end
+	
 }
