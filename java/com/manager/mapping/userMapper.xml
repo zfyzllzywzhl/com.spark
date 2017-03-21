@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 
+	1.操作数据库表的映射文件
+	2.namespace是映射文件的ID，必须与接口全类名一致
+	3.id必须与对应接口的某个方法名一致
+ -->
+
+<mapper namespace="com.manager.dao.UserMapper" >
+	<!-- 
+		1.#{id}相当于占位符，里面的ID可任意填写，最好与条件值相同
+		2.id="getFile"为sql语句的ID
+		3.parameterType为输入参数的类型
+		4.resultType为返回参数的类型
+	 -->
+		
+		
+		<!-- 有效配置begin -->
+		
+		
+		<!-- 配置File类型的map -->	
+		<resultMap type="User" id="userResult">
+		    <result column="id" property="id" />
+			<result column="username" property="username" />
+		</resultMap>
+		<!-- 
+			1.查找t_file表中的所有数据
+			2. resultMap:返回map的类型
+			3.id需与sql接口名一致
+		-->
+		
+		
+		<insert id="insertAll" parameterType="File">
+			insert into t_file(fileName,fileType,downloadurl,user) 
+			values(#{fileName},#{fileType},#{downloadurl},#{user})
+		</insert>
+		
+		<update id="setFileNum" parameterType="String">
+		     update t_file set nowfilenum = 1 where user = #{user}
+		</update>
+		
+		<update id="setFile" parameterType="File">
+		      update t_file set nowfilenum = 1,spotName = #{spotName},label = #{label} where user = #{user} and nowfilenum = 0
+		</update>
+		<select id="listAllImg" resultMap="fileResult">
+			select * from t_file where spotName=#{2} and fileType like 'img' limit #{0},#{1} 
+		</select>
+		
+		<select id="listAllVideo" resultMap="fileResult" >
+			select * from t_file where spotName=#{2} and fileType like 'video' limit #{0},#{1} 
+		</select>
+		
+		<select id="listAll3D" resultMap="fileResult" parameterType="File" >
+			select * from t_file where spotName=#{spotName} and fileType like '3D'
+		</select>
+		<select id="listImgByLabel" resultMap="fileResult"  >
+			select * from t_file where label like #{0} and fileType like 'img' 
+		</select>
+			<select id="listImgByLabel2" resultMap="fileResult"  >
+			select * from t_file where label like #{2} and fileType like 'img' limit #{0},#{1} 
+		</select>
+		
+		<select id="listVideoByLabel" resultMap="fileResult" parameterType="String" >
+			select * from t_file where label like #{label} and fileType like 'video' 
+		</select>
+		
+		<select id="listVideoByLabel2" resultMap="fileResult" >
+			select * from t_file where label like #{2} and fileType like 'video' limit #{0},#{1} 
+		</select>
+		
+		<select id="list3DByLabel" resultMap="fileResult" parameterType="String" >
+			select * from t_file where label like #{label} and fileType like '3D' 
+		</select>
+		
+		 <delete id="delete"  parameterType="int">
+		     delete from  t_file where id = #{id}
+		 </delete>
+		 
+		 <update id="update" parameterType="File" >
+		     update t_file set fileName = #{fileName},spotName = #{spotName},label = #{label},downloadurl = #{downloadurl}
+		        where id = #{id}
+		 </update>
+		 
+		 <select id="findFileByid" resultMap="fileResult" parameterType="String" >
+		      select * from t_file where id = #{id}
+		 </select>
+		 
+		 	 <select id="findFileByfilename" resultMap="fileResult" parameterType="String" >
+		      select * from t_file where fileName = #{fileName}
+		 </select>
+		 
+		 	<select id="countImgFileByScenic" resultType="int" parameterType="String" >
+		      select COUNT(*) from t_file where spotName = #{spotName} and fileType like 'img' 
+		 </select>
+		 
+		 	<select id="countVideoFileByScenic" resultType="int" parameterType="String" >
+		      select COUNT(*) from t_file where spotName = #{spotName} and fileType like 'video' 
+		 </select>
+		 
+		 	<select id="count3DFileByScenic" resultType="int" parameterType="String" >
+		      select COUNT(*) from t_file where spotName = #{spotName} and fileType like '3D' 
+		 </select>
+		 
+		  <select id="countImgFileByTheme" resultType="int" parameterType="String" >
+		      select COUNT(*) from t_file where label like #{label} and fileType like 'img' 
+		 </select>
+		 
+		 	<select id="countVideoFileByTheme" resultType="int" parameterType="String" >
+		      select COUNT(*) from t_file where label like #{label} and fileType like 'video' 
+		 </select>
+		 
+		 	<select id="count3DFileByTheme" resultType="int" parameterType="String" >
+		      select COUNT(*) from t_file where label like #{label} and fileType like '3D' 
+		 </select>
+		 
+		 	<select id="listAllFile" resultMap="fileResult">
+		 	  select * from t_file where spotName = #{2}  limit #{0},#{1} 
+		 	</select>
+		 <select id="countAllFile" resultType="int" parameterType="String">
+		     select count(*) from t_file where spotName like #{spotName}
+		 </select>
+		 
+		 	<select id="listAllFile2" resultMap="fileResult">
+		 	  select * from t_file where label like #{2} limit #{0},#{1} 
+		 	</select>
+		 <select id="countAllFile2" resultType="int" parameterType="String">
+		     select count(*) from t_file where label like #{2}
+		 </select>
+		 
+		<select id="countAllImgFile" resultType="int" parameterType="String">
+		     select count(*) from t_file where spotName = #{spotName} and fileType like 'img' 
+		 </select>
+	
+</mapper>
+ 
